@@ -1,0 +1,39 @@
+{
+	"1": {
+	  "type": "choice",
+	  "animation_file": "/Vulkan_neutral.ogv", 
+	  "img_file": "/Vulkan_neutral.jpg", 
+	  "title": "Schlechte Wasserquelle?",
+	  "description": "Du bist bei dem Anblick des ganzen Wassers ganz schön durstig geworden und findest eine Wasserquelle. Trinkst du aus ihr?",
+	  "options": {
+		"1": {
+		  "random_outcomes": [
+			{
+			  "text": "Oh nein! Du erkrankst an dem schlechten Wasser.",
+			  "effects": "Nimm einen Krankmarker und lege ihn in dein Palyerboard", 
+			  "chance": 0.6              
+			},
+			{
+			  "text": "Das Wasser ist überraschend klar und gut.",
+			  "effects": "Legt in der nächsten Dorfpahse doppelt so viel Wasser weg", 
+			  "chance": 0.4
+			}
+		  ]
+		},
+		"2": {
+		  "text": "Du gehst lieber auf Nummer sicher.",
+		  "effects": "Legt in der nächsten Dorfpahse kein Wasser weg"
+		}
+	  }
+	},
+  
+	"2": {
+	  "type": "fixed",
+	  "animation_file": "/Vulkan_neutral.ogv", 
+	  "img_file": "/Vulkan_neutral.jpg", 
+	  "title": "Fit durch Schwimmen",
+	  "description": "Durch das ganze Schwimmen in diesem Gebiet wirst du fit.\nZum nächsten Aufleveln deines Charakters musst du einmal weniger trainieren.Durch das ganze Schwimmen in diesem Gebiet wirst du fit.\nZum nächsten Aufleveln deines Charakters musst du einmal weniger trainieren.Durch das ganze Schwimmen in diesem Gebiet wirst du fit.\nZum nächsten Aufleveln deines Charakters musst du einmal weniger trainieren.Durch das ganze Schwimmen in diesem Gebiet wirst du fit.\nZum nächsten Aufleveln deines Charakters musst du einmal weniger trainieren.Durch das ganze Schwimmen in diesem Gebiet wirst du fit.\nZum nächsten Aufleveln deines Charakters musst du einmal weniger trainieren.",
+	  "effect": "Trainiere 1 mal weniger, für dein Level Up "
+	}
+}
+  

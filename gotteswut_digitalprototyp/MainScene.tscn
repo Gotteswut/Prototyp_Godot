@@ -1,0 +1,225 @@
+[gd_scene load_steps=15 format=3 uid="uid://cwl4os0wox06k"]
+
+[ext_resource type="Script" uid="uid://drk68ao2segix" path="res://Skripts/movement_sumpf.gd" id="1_a814b"]
+[ext_resource type="Texture2D" uid="uid://my3nk85meefw" path="res://Assets/Version_2_14-07-2025/Background.png" id="1_rf2cd"]
+[ext_resource type="Texture2D" uid="uid://bd21o3trnwa0q" path="res://Assets/Version_2_14-07-2025/Hexagon_default.png" id="2_a814b"]
+[ext_resource type="Texture2D" uid="uid://cjp8wqumvtbnx" path="res://Assets/Version_2_14-07-2025/Cloud.png" id="3_5crlr"]
+[ext_resource type="Texture2D" uid="uid://yhe3oh5tqyn4" path="res://Assets/Version_2_14-07-2025/Hexagon_Sumpf_1.png" id="4_hbc2u"]
+[ext_resource type="Texture2D" uid="uid://dg7mf8orl10l6" path="res://Assets/Version_2_14-07-2025/Character.png" id="5_torvr"]
+[ext_resource type="Script" uid="uid://diesado6g1vvr" path="res://Skripts/ereigniss_controller.gd" id="7_5crlr"]
+
+[sub_resource type="Animation" id="Animation_hbc2u"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_5crlr"]
+resource_name = "fade_out_child"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 4.92457),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_torvr"]
+_data = {
+&"RESET": SubResource("Animation_hbc2u"),
+&"fade_out_child": SubResource("Animation_5crlr")
+}
+
+[sub_resource type="Animation" id="Animation_a814b"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_torvr"]
+resource_name = "Selected_Hexagon"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.01, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.2, 1.2)]
+}
+
+[sub_resource type="Animation" id="Animation_8xkvn"]
+resource_name = "Selected_hexagon_revers"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1.2, 1.2), Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_8xkvn"]
+_data = {
+&"RESET": SubResource("Animation_a814b"),
+&"Selected_Hexagon": SubResource("Animation_torvr"),
+&"Selected_hexagon_revers": SubResource("Animation_8xkvn")
+}
+
+[node name="Sumpf_Szene" type="Node2D"]
+script = ExtResource("1_a814b")
+
+[node name="Background" type="Node2D" parent="."]
+
+[node name="Background_IMG" type="Sprite2D" parent="Background"]
+position = Vector2(960, 540)
+texture = ExtResource("1_rf2cd")
+
+[node name="Felder" type="Node2D" parent="."]
+
+[node name="Hexagon_ID2" type="Sprite2D" parent="Felder"]
+position = Vector2(951, 291)
+texture = ExtResource("2_a814b")
+
+[node name="Cloud" type="Sprite2D" parent="Felder/Hexagon_ID2"]
+texture = ExtResource("3_5crlr")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Felder/Hexagon_ID2/Cloud"]
+libraries = {
+&"": SubResource("AnimationLibrary_torvr")
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Felder/Hexagon_ID2"]
+libraries = {
+&"": SubResource("AnimationLibrary_8xkvn")
+}
+
+[node name="Hexagon_ID3" type="Sprite2D" parent="Felder"]
+position = Vector2(736, 546)
+texture = ExtResource("2_a814b")
+
+[node name="Cloud" type="Sprite2D" parent="Felder/Hexagon_ID3"]
+texture = ExtResource("3_5crlr")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Felder/Hexagon_ID3/Cloud"]
+libraries = {
+&"": SubResource("AnimationLibrary_torvr")
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Felder/Hexagon_ID3"]
+libraries = {
+&"": SubResource("AnimationLibrary_8xkvn")
+}
+
+[node name="Hexagon_ID1" type="Sprite2D" parent="Felder"]
+position = Vector2(1167, 547)
+texture = ExtResource("4_hbc2u")
+
+[node name="Cloud" type="Sprite2D" parent="Felder/Hexagon_ID1"]
+texture = ExtResource("3_5crlr")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Felder/Hexagon_ID1/Cloud"]
+libraries = {
+&"": SubResource("AnimationLibrary_torvr")
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Felder/Hexagon_ID1"]
+libraries = {
+&"": SubResource("AnimationLibrary_8xkvn")
+}
+
+[node name="Hexagon_ID0" type="Sprite2D" parent="Felder"]
+position = Vector2(1600, 540)
+texture = ExtResource("2_a814b")
+
+[node name="Cloud" type="Sprite2D" parent="Felder/Hexagon_ID0"]
+visible = false
+texture = ExtResource("3_5crlr")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Felder/Hexagon_ID0/Cloud"]
+libraries = {
+&"": SubResource("AnimationLibrary_torvr")
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Felder/Hexagon_ID0"]
+libraries = {
+&"": SubResource("AnimationLibrary_8xkvn")
+}
+
+[node name="Hexagon_ID4" type="Sprite2D" parent="Felder"]
+position = Vector2(951, 796)
+texture = ExtResource("2_a814b")
+
+[node name="Cloud" type="Sprite2D" parent="Felder/Hexagon_ID4"]
+texture = ExtResource("3_5crlr")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Felder/Hexagon_ID4/Cloud"]
+libraries = {
+&"": SubResource("AnimationLibrary_torvr")
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Felder/Hexagon_ID4"]
+libraries = {
+&"": SubResource("AnimationLibrary_8xkvn")
+}
+
+[node name="Karakter" type="Node2D" parent="."]
+
+[node name="Character" type="Sprite2D" parent="Karakter"]
+position = Vector2(1609, 418)
+scale = Vector2(0.805732, 0.805733)
+texture = ExtResource("5_torvr")
+
+[node name="Ereigniss_controller" type="Node2D" parent="."]
+script = ExtResource("7_5crlr")
+
+[node name="Container" type="Container" parent="Ereigniss_controller"]
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="Last_Frame_IMG" type="TextureRect" parent="Ereigniss_controller/Container"]
+layout_mode = 2
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="Ereigniss_controller/Container"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Ereigniss_controller"]
+offset_left = -87.71
+offset_right = 127.71
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 40
