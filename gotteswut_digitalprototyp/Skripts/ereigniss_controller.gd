@@ -13,7 +13,7 @@ var pressedButton
 func _ready():
 	load_and_init()
 	randomize()
-	incoming_signal()#nur zum schnellen testen drin aktuell 
+	#incoming_signal()#nur zum schnellen testen drin aktuell 
 	var start_event = get_node("..")
 	start_event.connect("character_moved_add_card_event", Callable(self, "incoming_signal"))
 
@@ -32,11 +32,12 @@ func load_and_init():
 	
 	var viewport_size = get_viewport_rect().size
 	text_container.position = viewport_size / 2 - text_container.size / 2
+	
 func incoming_signal():
 	get_node("../").input_enabled = false
 	#get card
 	var card_number = randi()%events.size()+1
-	var selected_card = events["1"]#events[str(card_number)]
+	var selected_card = events[str(card_number)]
 	#setup last frame IMG
 	img_path = "res://Assets/Card_animations" + selected_card.get("img_file")
 	var texture = load(img_path) as Texture2D
@@ -56,8 +57,9 @@ func fixed_event(selected_card):
 	build_button(text_container, "confirm", "Bestätigen", 22, font_path, false)
 	
 	var confirm_button
+	var null_object = [false, 0, 0]
 	confirm_button = text_container.get_node("confirm")
-	confirm_button.pressed.connect(func(): on_confirm_pressed(confirm_button))
+	confirm_button.pressed.connect(func(): on_confirm_pressed(confirm_button, null_object, null_object))
 
 	# Video starten
 	var video_path = "res://Assets/Card_animations" + selected_card.get("animation_file")
@@ -69,6 +71,8 @@ func fixed_event(selected_card):
 	)
 #choise event 
 func choise_event(selected_card):
+	var button_option1_random = [[0, ""], [0, ""]]
+	var button_option2_random = [[0, ""], [0, ""]]
 	build_label(text_container, 32, font_path, "label_title", selected_card, "title")
 	build_label(text_container, 16, font_path, "card_description", selected_card, "description")
 	
@@ -87,8 +91,15 @@ func choise_event(selected_card):
 		for number in random_outcomes.size(): 
 			var text =  "option_1_inner_VBox_" + str(number)
 			var outcome = build_VBox(option_1_innerHBox, text)
+			button_option1_random[number][1] = text
 
-			var json_content = random_outcomes[number]["text"]
+			var json_content = random_outcomes[number]["chance"]
+			text = "probability_variante_1_" + str(number)
+			button_option1_random[number][0] = json_content*100
+			json_content = "Eintrittswahrscheinlichkeit: "+str(json_content*100)+"%"
+			build_label(outcome, 16 , font_path, text, null, json_content)
+			
+			json_content = random_outcomes[number]["text"]
 			text = "text_variante_1_" + str(number)
 			build_label(outcome, 16, font_path, text, null, json_content)
 
@@ -96,8 +107,10 @@ func choise_event(selected_card):
 			text = "effect__variante_1_" + str(number)
 			build_label(outcome, 16, font_path, text, null, json_content)
 	else: 
+		button_option1_random = null
 		var outcome = build_VBox(option_1_innerHBox, "option_1_inner_VBox")
 		var json_content = selected_card["options"]["1"]["text"]
+		build_label(outcome, 16, font_path, "probability", null,"Eintrittswahrscheinlichkeit: 100%" )
 		build_label(outcome, 16, font_path,"text_1", null, json_content)
 		json_content = selected_card["options"]["1"]["effects"]
 		build_label(outcome, 16, font_path,"effect_1", null, json_content)
@@ -109,8 +122,15 @@ func choise_event(selected_card):
 		for number in random_outcomes.size(): 
 			var text =  "option_2_inner_VBox_" + str(number)
 			var outcome = build_VBox(option_2_innerHBox, text)
+			button_option2_random[number][1]= text
 
-			var json_content = random_outcomes[number]["text"]
+			var json_content = random_outcomes[number]["chance"]
+			text = "probability_variante_2_" + str(number)
+			button_option2_random[number][0] =  json_content*100
+			json_content = "Eintrittswahrscheinlichkeit: "+str(json_content*100)+"%"
+			build_label(outcome, 16 , font_path, text, null, json_content)
+			
+			json_content = random_outcomes[number]["text"]
 			text = "text_variante_2_" + str(number)
 			build_label(outcome, 16, font_path, text, null, json_content)
 
@@ -119,8 +139,10 @@ func choise_event(selected_card):
 			build_label(outcome, 16, font_path, text, null, json_content)
 		
 	else: 
+		button_option2_random = null
 		var outcome = build_VBox(option_2_innerHBox, "option_2_inner_VBox")
 		var json_content = selected_card["options"]["2"]["text"]
+		build_label(outcome, 16, font_path, "probability", null,"Eintrittswahrscheinlichkeit: 100%" )
 		build_label(outcome, 16, font_path,"text_2", null, json_content)
 		json_content = selected_card["options"]["2"]["effects"]
 		build_label(outcome, 16, font_path,"effect_2", null, json_content)
@@ -129,12 +151,12 @@ func choise_event(selected_card):
 	build_button(option_1, "confirm1", "Bestätigen", 22, font_path, false)
 	var confirm_button_option1
 	confirm_button_option1 = option_1.get_node("confirm1")
-	confirm_button_option1.pressed.connect(func(): on_confirm_pressed(confirm_button_option1))
+	confirm_button_option1.pressed.connect(func(): on_confirm_pressed(confirm_button_option1,button_option1_random, button_option2_random))
 	#Button 2
 	build_button(option_2, "confirm2", "Bestätigen", 22, font_path, false)
 	var confirm_button_option2
 	confirm_button_option2 = option_2.get_node("confirm2")
-	confirm_button_option2.pressed.connect(func(): on_confirm_pressed(confirm_button_option2))
+	confirm_button_option2.pressed.connect(func(): on_confirm_pressed(confirm_button_option2,button_option1_random, button_option2_random))
 
 	
 	# video start
@@ -151,31 +173,67 @@ func on_video_finished(button_count):
 	last_frame_texture.visible = true
 	
 	if button_count == 1: 
-		var confirm_button = text_container.find_child("confirm", true, false)
-		confirm_button.visible = true
-		confirm_button.grab_focus()
+		if text_container.find_child("confirm", true, false): 
+			var confirm_button = text_container.find_child("confirm", true, false)
+			confirm_button.visible = true
+			confirm_button.grab_focus()
 	else: 
-		var confirm_button_option1 = text_container.find_child("confirm1", true, false)
-		confirm_button_option1.visible = true
-		confirm_button_option1.grab_focus()
-		var confirm_button_option2 = text_container.find_child("confirm2", true, false)
-		confirm_button_option2.visible = true
-		confirm_button_option2.grab_focus()
+		if (text_container.find_child("confirm1", true, false)) and (text_container.find_child("confirm2", true, false)):
+			var confirm_button_option1 = text_container.find_child("confirm1", true, false)
+			confirm_button_option1.visible = true
+			confirm_button_option1.grab_focus()
+			var confirm_button_option2 = text_container.find_child("confirm2", true, false)
+			confirm_button_option2.visible = true
+			confirm_button_option2.grab_focus()
 
-func on_confirm_pressed(thebutton):
+func on_confirm_pressed(thebutton,button_option1_random, button_option2_random):
 	var button = thebutton
-	last_frame_texture.visible = false
-	video_player.visible = true
-	
 	# Eingabe in Skript 1 wieder aktivieren
 	button.release_focus()
 	get_node("../").input_enabled = true
+	
+	if button.name == "confirm1" and button_option1_random != null and button_option2_random ==null: 
+		var selected = random_output_genarator(button_option1_random[0][0])
+		clean_childs(find_child("option2", true, false))
+		find_child("confirm1", true, false).queue_free()
+		find_child("option_wrapper", true, false).alignment = BoxContainer.ALIGNMENT_CENTER
+		if selected == 1:
+			var not_selected = find_child(button_option1_random[1][1], true, false)
+			await clean_childs(not_selected, 4.0)
+		elif selected == 2: 
+			var not_selected = find_child(button_option1_random[0][1], true, false)
+			await clean_childs(not_selected, 4.0)
+	elif button.name == "confirm2" and button_option1_random == null and button_option2_random !=null : 
+		var selected = random_output_genarator(button_option2_random[0][0])
+		clean_childs(find_child("option1", true, false))
+		find_child("confirm2", true, false).queue_free()
+		find_child("option_wrapper", true, false).alignment = BoxContainer.ALIGNMENT_CENTER
+		if selected == 1: 
+			var not_selected = find_child(button_option2_random[1][1], true, false)
+			await clean_childs(not_selected, 4.0)
+		elif selected == 2: 
+			var not_selected = find_child(button_option2_random[0][1], true, false)
+			await clean_childs(not_selected, 4.0)
+	
 
-	# Clean-up UI
-	for child in text_container.get_children():
-		text_container.remove_child(child)
+	last_frame_texture.visible = false
+	video_player.visible = true
+	
+	clean_childs(text_container)
+
+func clean_childs(container, time := 0): 
+	for child in container.get_children():
+		container.remove_child(child)
 		child.queue_free()
-
+		
+	if time != 0: 
+		await get_tree().create_timer(time).timeout		
+func random_output_genarator(posability1):
+	var zahl = randi_range(1, 100)
+	if zahl > posability1: 
+		return 2
+	else: 
+		return 1  
 #build
 func build_label(container,font_size, font_path, label_name, key_objket, key := "" ):
 	var label = Label.new()
